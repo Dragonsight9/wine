@@ -20,7 +20,7 @@ jobs:
       - name: Install Bison
         run: |
           brew install bison
-          echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> $GITHUB_ENV
+          echo 'export PATH="/opt/homebrew/opt/bison/bin:$PATH"' >> $GITHUB_PATH
 
       - name: Set PATH for Bison
         run: | 
