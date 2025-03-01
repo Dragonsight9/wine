@@ -13,6 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Install Homebrew
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: Install Bison
+        run: |
+          brew install bison
+          echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> $GITHUB_ENV
+
+      - name: Verify Bison version
+        run: bison --version
+
       - name: Configure
         run: ./configure
 
