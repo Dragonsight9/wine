@@ -3,10 +3,10 @@ name: Build Wine on macOS
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -23,8 +23,20 @@ jobs:
     - name: Install dependencies
       run: |
         brew install mingw-w64
+        brew install bison
         # Add any other dependencies you need here
+
+    - name: Unlink and Relink Bison
+      run: |
+        brew unlink bison
+        brew link bison --force
     
+    - name: Update PATH for Bison
+      run: |
+        echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> $HOME/.zshrc
+        source $HOME/.zshrc
+        bison --version  # Verify Bison version
+
     - name: Build Wine
       run: |
         ./configure --enable-win64
