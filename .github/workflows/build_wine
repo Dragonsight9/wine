@@ -1,0 +1,56 @@
+name: Build Wine on macOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Install Homebrew
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    
+    - name: Install dependencies
+      run: |
+        brew install mingw-w64
+        # Add any other dependencies you need here
+    
+    - name: Build Wine
+      run: |
+        ./configure --enable-win64
+        make
+    
+    - name: Tar the compiled Wine
+      run: |
+        tar -czvf wine.tar.gz wine
+    
+    - name: Create release draft
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v1.0.0
+        release_name: Wine Build
+        draft: true
+        prerelease: false
+    
+    - name: Upload tar file to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./wine.tar.gz
+        asset_name: wine.tar.gz
+        asset_content_type: application/gzip
