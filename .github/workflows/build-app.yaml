@@ -23,7 +23,9 @@ jobs:
           echo 'export PATH="/usr/local/opt/bison/bin:$PATH"' >> $GITHUB_ENV
 
       - name: Set PATH for Bison
-        run: echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
+        run: | 
+          echo 'export PATH="/opt/homebrew/opt/bison/bin:$PATH"' >> $GITHUB_PATH
+          export LDFLAGS="-L/opt/homebrew/opt/bison/lib"
 
       - name: Verify Bison version
         run: bison --version
